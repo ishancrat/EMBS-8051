@@ -1,0 +1,24 @@
+ORG 0000H
+	JMP START
+	
+START: MOV R2,#0AH
+	   MOV R0,#50H
+       MOV A,#00H
+	   MOV @R0,A ;MOV 00 TO 50H
+	   INC A
+	   INC R0
+	   MOV @R0,A ;MOV 01 TO 51H
+	   MOV R4,#00H
+	   
+	   
+LOOP:  ADD A,R4 ;A = 1,2
+	   INC R0
+	   MOV @R0,A ;NEXTPOS = 1,2
+	   DEC R0
+	   MOV R5,A
+	   MOV A,@R0
+	   MOV R4,A
+	   MOV A,R5
+	   INC R0
+	   DJNZ R2,LOOP ; R2 = 9
+END
