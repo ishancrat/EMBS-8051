@@ -1,0 +1,123 @@
+ORG 0000H
+	SJMP START
+ORG 0036H
+	
+CMD: CLR P2.3 ;rs
+	 MOV P3,A
+	 SETB P2.2 
+	 ACALL DELAY
+	 CLR P2.2
+	 RET
+
+CLRSCRN: MOV R2,A
+		 MOV A,#01H
+		 ACALL CMD
+		 MOV A,R2
+		 RET
+	 
+DISPLAY: ACALL CLRSCRN
+		 SETB P2.3
+		 MOV P3,A
+		 SETB P2.2
+		 ACALL DELAY
+		 CLR P2.2
+		 RET
+
+DELAY: MOV R3,#40
+BACK: MOV R4,#250
+HERE: DJNZ R4,HERE
+	  DJNZ R3, BACK
+	  RET
+	
+START: MOV A,#38H
+	   ACALL CMD
+	   ACALL DELAY
+	   
+	   MOV A,#0EH
+	   ACALL CMD
+	   ACALL DELAY
+	   
+	   MOV A,#01H
+	   ACALL CMD
+	   ACALL DELAY
+	   
+	   MOV A,#80H
+	   ACALL CMD
+	   ACALL DELAY
+	      
+	   SCANTOP:	MOV P1,#0FFH
+				CLR P1.0
+				JB P1.4,N1
+				MOV A,#'7'
+				ACALL DISPLAY
+				ACALL DELAY
+				N1: JB P1.5,N2
+					MOV A,#'8'
+					ACALL DISPLAY
+					ACALL DELAY
+					N2: JB P1.6,N3
+						MOV A,#'9'
+						ACALL DISPLAY
+						ACALL DELAY
+						N3: JB P1.7,SCAN2
+							MOV A,#'/'
+							ACALL DISPLAY
+							ACALL DELAY
+	   SCAN2: SETB P1.0
+			  CLR P1.1
+			  JB P1.4,M1
+			  MOV A,#'4'
+			  ACALL DISPLAY
+			  ACALL DELAY
+			  M1: JB P1.5,M2
+				  MOV A,#'5'
+				  ACALL DISPLAY
+				  ACALL DELAY
+				  M2: JB P1.6,M3
+					  MOV A,#'6'
+					  ACALL DISPLAY
+					  ACALL DELAY
+					  M3: JB P1.7,SCAN3
+						  MOV A,#'*'
+						  ACALL DISPLAY
+						  ACALL DELAY
+	   SCAN3: SETB P1.1
+			  CLR P1.2
+			  JB P1.4,S1
+			  MOV A,#'1'
+			  ACALL DISPLAY
+			  ACALL DELAY
+			  S1: JB P1.5,S2
+				  MOV A,#'2'
+				  ACALL DISPLAY
+				  ACALL DELAY
+				  S2: JB P1.6,S3
+					  MOV A,#'3'
+					  ACALL DISPLAY
+					  ACALL DELAY
+					  S3: JB P1.7,SCAN4
+						  MOV A,#'-'
+						  ACALL DISPLAY
+						  ACALL DELAY
+						  
+	   SCAN4: SETB P1.2 
+			  CLR P1.3
+			  JB P1.4,Q1
+			  MOV A,#'@'
+			  ACALL DISPLAY
+			  ACALL DELAY
+			  Q1: JB P1.5,Q2
+				  MOV A,#'0'
+				  ACALL DISPLAY
+				  ACALL DELAY
+				  Q2: JB P1.6,Q3
+					  MOV A,#'='
+					  ACALL DISPLAY
+					  ACALL DELAY
+					  Q3: JB P1.7,SCANTOP_ROUTER
+						  MOV A,#'+'
+						  ACALL DISPLAY
+						  ACALL DELAY
+		SCANTOP_ROUTER:LJMP SCANTOP
+
+END
